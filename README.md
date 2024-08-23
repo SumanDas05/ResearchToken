@@ -1,127 +1,43 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+# ResearchToken and ResearchProject 
 
-// Define the ResearchToken contract
-contract ResearchToken {
-    string public name = "ResearchToken";
-    string public symbol = "RCH";
-    uint8 public decimals = 18;
-    uint256 public totalSupply;
-    address public owner;
+## Vision
 
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
+![image](https://github.com/user-attachments/assets/5e4a4002-b9fb-483f-8d32-8570ef432d8f)
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+The ResearchToken (RCH) and ResearchProject smart contracts facilitate blockchain-based funding for research initiatives. The ResearchToken is an ERC20 token used as the currency for contributions, while ResearchProject enables users to create, fund, and manage research projects securely and transparently.
 
-    constructor() {
-        owner = msg.sender;
-        totalSupply = 1000000 * 10 ** uint256(decimals); // 1 million tokens
-        balanceOf[owner] = totalSupply;
-        emit Transfer(address(0), owner, totalSupply);
-    }
+## Project Flow:
 
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balanceOf[msg.sender] >= _value, "Insufficient balance");
-        require(_to != address(0), "Invalid address");
+1. **Deploy ResearchToken**
+   - Initial supply of 1,000,000 RCH tokens assigned to the owner.
 
-        balanceOf[msg.sender] -= _value;
-        balanceOf[_to] += _value;
-        emit Transfer(msg.sender, _to, _value);
-        return true;
-    }
+2. **Create ResearchProject**
+   - Owner sets up new research projects specifying the name and funding goal.
 
-    function approve(address _spender, uint256 _value) public returns (bool success) {
-        allowance[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
-        return true;
-    }
+3. **Fund Projects**
+   - Users fund projects by transferring RCH tokens to the contract.
 
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(balanceOf[_from] >= _value, "Insufficient balance");
-        require(allowance[_from][msg.sender] >= _value, "Allowance exceeded");
-        require(_to != address(0), "Invalid address");
+4. **Claim Rewards**
+   - Researchers claim funds if the project meets its funding goal and is marked as completed.
 
-        balanceOf[_from] -= _value;
-        balanceOf[_to] += _value;
-        allowance[_from][msg.sender] -= _value;
-        emit Transfer(_from, _to, _value);
-        return true;
-    }
-}
+## Contract Addresses
 
-// Define the ResearchProject contract
-contract ResearchProject {
-    enum ProjectStatus { Active, Completed, Failed }
+- **ResearchToken Contract Address:** 0x4eed71f31366c3723a6cbae74fbc75d5030ba1b7
+- ![image](https://github.com/user-attachments/assets/d457aaf4-6b93-4c06-9afe-bb7a60f8f978)
 
-    struct Project {
-        string name;
-        address researcher;
-        uint256 fundingGoal;
-        uint256 fundsRaised;
-        ProjectStatus status;
-    }
 
-    Project[] public projects;
-    ResearchToken public token;
-    address public owner;
+## Future Scope
 
-    event ProjectCreated(uint256 projectId, string name, address researcher, uint256 fundingGoal);
-    event Funded(uint256 projectId, address funder, uint256 amount);
-    event RewardClaimed(uint256 projectId, address researcher, uint256 reward);
+- **Project Enhancements:** Introduce features for milestone tracking and project updates.
+- **Governance:** Implement decentralized governance for better project oversight.
+- **Scalability:** Optimize contracts for lower gas costs and improved efficiency.
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not the contract owner");
-        _;
-    }
+## Contact Information
 
-    constructor(address tokenAddress) {
-        token = ResearchToken(tokenAddress);
-        owner = msg.sender;
-    }
+For inquiries and support, please contact:
 
-    // Function to create a new research project
-    function createProject(string memory _name, uint256 _fundingGoal) external onlyOwner {
-        projects.push(Project({
-            name: _name,
-            researcher: msg.sender,
-            fundingGoal: _fundingGoal,
-            fundsRaised: 0,
-            status: ProjectStatus.Active
-        }));
-        
-        emit ProjectCreated(projects.length - 1, _name, msg.sender, _fundingGoal);
-    }
+- *Creator*: Suman Das
+- *Email*: sumandaz902@gmail.com
+- *GitHub*: https://github.com/SumanDas05
 
-    // Function to fund a project
-    function fundProject(uint256 _projectId, uint256 _amount) external {
-        require(_projectId < projects.length, "Invalid project ID");
-        require(projects[_projectId].status == ProjectStatus.Active, "Project is not active");
-
-        // Transfer tokens from funder to this contract
-        require(token.transferFrom(msg.sender, address(this), _amount), "Transfer failed");
-
-        // Update project funds
-        projects[_projectId].fundsRaised += _amount;
-
-        emit Funded(_projectId, msg.sender, _amount);
-    }
-
-    // Function for researcher to claim rewards when funding goal is reached
-    function claimReward(uint256 _projectId) external {
-        require(_projectId < projects.length, "Invalid project ID");
-        Project storage project = projects[_projectId];
-        require(msg.sender == project.researcher, "Only the researcher can claim rewards");
-        require(project.fundsRaised >= project.fundingGoal, "Funding goal not reached");
-        require(project.status == ProjectStatus.Active, "Project is not active");
-
-        // Deactivate the project
-        project.status = ProjectStatus.Completed;
-
-        // Transfer the funds to the researcher
-        require(token.transfer(msg.sender, project.fundsRaised), "Transfer failed");
-
-        emit RewardClaimed(_projectId, msg.sender, project.fundsRaised);
-    }
-}
+---
