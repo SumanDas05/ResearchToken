@@ -1,6 +1,6 @@
 # ResearchToken and ResearchProject 
 
-## Vision
+## DESCRIPTION
 
 ![image](https://github.com/user-attachments/assets/5e4a4002-b9fb-483f-8d32-8570ef432d8f)
 
