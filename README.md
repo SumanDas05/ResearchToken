@@ -25,6 +25,14 @@ The ResearchToken (RCH) and ResearchProject smart contracts facilitate blockchai
 - **ResearchToken Contract Address:** 0x4eed71f31366c3723a6cbae74fbc75d5030ba1b7
 - ![image](https://github.com/user-attachments/assets/d457aaf4-6b93-4c06-9afe-bb7a60f8f978)
 
+ ##Features
+ Transfer: Allows users to send tokens to other addresses.
+Approve and TransferFrom: Supports delegation of token transfers, enabling
+ third parties to spend tokens on behalf of the owner.
+
+##Vision
+The ResearchToken (RCH) and ResearchProject contracts leverage blockchain technology to deliver a transparent, secure, and efficient platform for managing and funding research initiatives, transforming the way research is supported and tracked.
+
 
 ## Future Scope
 
